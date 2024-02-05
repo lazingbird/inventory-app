@@ -5,7 +5,6 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 exports.index = asyncHandler(async (req, res, next) => {
-  // Get details of books, book instances, authors and genre counts (in parallel)
   const [numGuitars, numCategories] = await Promise.all([
     Guitar.countDocuments({}).exec(),
     Category.countDocuments({}).exec(),
@@ -23,4 +22,25 @@ exports.guitar_list = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.render("guitar_list", { title: "Guitar List", guitar_list: allGuitars });
+});
+
+exports.guitar_detail = asyncHandler(async (req, res, next) => {
+  const guitar = await Guitar.findById(req.params.id)
+    .populate("category")
+    .exec();
+
+  if (guitar === null) {
+    const err = new Error("Guitar not found");
+    console.log(err);
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("guitar_detail", {
+    name: guitar.name,
+    description: guitar.description,
+    category: guitar.category,
+    price: guitar.price,
+    stock: guitar.stock,
+  });
 });

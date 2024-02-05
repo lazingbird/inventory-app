@@ -5,9 +5,14 @@ block content
   if guitar_list.length
     ul
       each guitar in guitar_list
-        li
-          a(href=guitar.url) #{guitar.name}
-          |  (#{guitar.category.name})
+        li 
+            a(href=guitar.url) #{guitar.name}
+            br
+            span #{guitar.category.name}
+            br 
+            span €#{guitar.price} EUR
+        br
+
 
   else
     p There are no guitars.

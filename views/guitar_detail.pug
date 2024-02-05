@@ -1,0 +1,8 @@
+extends layout 
+
+block content 
+    h1 #[strong #{name}]
+    h2 #[strong €#{price} EUR]
+    a(href=`/shop/category/${category.id}`) #[strong #{category.name}]
+    p=description
+    span Stock: #{stock}

@@ -11,7 +11,7 @@ const GuitarSchema = new Schema({
 });
 
 GuitarSchema.virtual("url").get(function () {
-  return `/catalog/book/${this._id}`;
+  return `/shop/guitar/${this._id}`;
 });
 
 module.exports = mongoose.model("Guitar", GuitarSchema);

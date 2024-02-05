@@ -1,0 +1,13 @@
+extends layout 
+
+block content 
+
+    h1 #{category.name}
+
+    ul 
+        each guitar in category_guitars 
+            li 
+                a(href=guitar.url) #{guitar.name}
+                br
+                span €#{guitar.price} EUR
+            br
