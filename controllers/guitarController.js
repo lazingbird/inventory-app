@@ -66,7 +66,92 @@ exports.guitar_delete_post = asyncHandler(async (req, res, next) => {
   res.redirect(`/shop/category/${guitar.category}`);
 });
 
-exports.guitar_update_get = asyncHandler(async (req, res, next) => {});
+exports.guitar_update_get = asyncHandler(async (req, res, next) => {
+  const [guitar, allCategories] = await Promise.all([
+    Guitar.findById(req.params.id).populate("category").exec(),
+    Category.find().sort({ name: 1 }).exec(),
+  ]);
+
+  if (guitar === null) {
+    // No results.
+    const err = new Error("Guitar not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  // Mark our selected genres as checked.
+  allCategories.forEach((category) => {
+    if (guitar.category == category._id) category.checked = "true";
+  });
+
+  res.render("guitar_form", {
+    title: "Update Guitar",
+    categories: allCategories,
+    guitar: guitar,
+  });
+});
+
+exports.guitar_update_post = [
+  body("name", "Name must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("description", "description must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("category", "category must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("price", "price must not be empty").trim().isLength({ min: 1 }).escape(),
+  body("stock", "description must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    console.log(req.body);
+
+    const guitar = new Guitar({
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      stock: req.body.stock,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const [allGuitars, allCategories] = await Promise.all([
+        Guitar.find().sort({ name: 1 }).exec(),
+        Category.find().sort({ name: 1 }).exec(),
+      ]);
+
+      for (const category of allCategories) {
+        if (guitar.category == category._id) {
+          category.checked = "true";
+        }
+      }
+      res.render("guitar_form", {
+        title: "Inser Guitar",
+        guitars: allGuitars,
+        categories: allCategories,
+        guitar: guitar,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Data from form is valid. Save guitar.
+      const updatedGuitar = await Guitar.findByIdAndUpdate(
+        req.params.id,
+        guitar,
+        {}
+      );
+
+      res.redirect(updatedGuitar.url);
+    }
+  }),
+];
 
 exports.guitar_create_get = asyncHandler(async (req, res, next) => {
   const allCategories = await Category.find().sort({ name: 1 }).exec();
