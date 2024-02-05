@@ -44,3 +44,12 @@ exports.guitar_detail = asyncHandler(async (req, res, next) => {
     stock: guitar.stock,
   });
 });
+
+exports.guitar_create_get = asyncHandler(async (req, res, next) => {
+  const allCategories = await Category.find().sort({ name: 1 }).exec();
+
+  res.render("guitar_form", {
+    title: "Insert Guitar",
+    categories: allCategories,
+  });
+});

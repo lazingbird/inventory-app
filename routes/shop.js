@@ -8,6 +8,8 @@ router.get("/", guitar_controller.index);
 
 router.get("/guitars", guitar_controller.guitar_list);
 
+router.get("/guitar/create", guitar_controller.guitar_create_get);
+
 router.get("/guitar/:id", guitar_controller.guitar_detail);
 
 router.get("/category/:id", category_controller.category_detail);

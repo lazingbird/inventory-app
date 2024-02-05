@@ -1,0 +1,25 @@
+extends layout 
+
+block content 
+
+    h1 #{title}: #{category:name}
+
+    if category_guitars.length
+
+        p #[strong Delete the following guitars before attempting to delete this genre.]
+        div(style='margin-left:20px;margin-top:20px')
+        h4 Guitars
+        dl
+            each guitar in category_guitars
+            dt
+                a(href=guitar.url) #{guitar.title}
+            dd #{guitar.summary}
+
+  else
+    p Do you really want to delete this category?
+
+    form(method='POST')
+      div.form-group
+        input#categoryid.form-control(type='hidden', name='category', value=category._id )
+
+      button.btn.btn-primary(type='submit') Delete
