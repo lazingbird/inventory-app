@@ -9,6 +9,10 @@ router.get("/", guitar_controller.index);
 router.get("/guitars", guitar_controller.guitar_list);
 
 router.get("/guitar/create", guitar_controller.guitar_create_get);
+router.post("/guitar/create", guitar_controller.guitar_create_post);
+
+router.get("/guitar/:id/delete", guitar_controller.guitar_delete_get);
+router.post("/guitar/:id/delete", guitar_controller.guitar_delete_post);
 
 router.get("/guitar/:id", guitar_controller.guitar_detail);
 
